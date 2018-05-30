@@ -14,42 +14,115 @@ namespace VisionAPI
 {
     public partial class Form1 : Form
     {
+        IReadOnlyList<EntityAnnotation> labelAnnotations;
+        IReadOnlyList<EntityAnnotation> textAnnotations;
+        IReadOnlyList<EntityAnnotation> logoAnnotations;
+
         public Form1()
         {
             InitializeComponent();
             System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", ConfigurationManager.AppSettings["GOOGLE_APPLICATION_CREDENTIALS"]);
+            btnProcesar.Enabled = false;
+            txtRutaImagen.Enabled = false;
+            picLoading.Visible = false;
         }
 
         private void btnProcesar_Click(object sender, EventArgs e)
         {
-            var client = ImageAnnotatorClient.Create();
-            var image = Google.Cloud.Vision.V1.Image.FromFile("coca-cola.png");
+            ProcesarImagenAsync();
 
-            var response = client.DetectLabels(image);
+            //var client = ImageAnnotatorClient.Create();
+            //var image = Google.Cloud.Vision.V1.Image.FromFile(txtRutaImagen.Text);
+            //var labelAnnotations = client.DetectLabels(image);
+            //var textAnnotations = client.DetectText(image);
+            //var logoAnnotations = client.DetectLogos(image);
 
-            textBox1.Text = string.Empty;
-            foreach (var annotation in response)
+            //txtLabelAnnotations.Text = string.Empty;
+            //txtTextAnnotations.Text = string.Empty;
+            //txtLogoAnnotations.Text = string.Empty;
+
+            //foreach (var annotation in labelAnnotations)
+            //{
+            //    if (annotation.Description != null)
+            //    {
+            //        txtLabelAnnotations.Text += annotation.Description + "\r\n";
+            //    }
+            //}
+
+            //foreach (var annotation in textAnnotations)
+            //{
+            //    if (annotation.Description != null)
+            //    {
+            //        txtTextAnnotations.Text += annotation.Description + "\r\n";
+            //    }
+            //}
+
+            //foreach (var annotation in logoAnnotations)
+            //{
+            //    if (annotation.Description != null)
+            //    {
+            //        txtLogoAnnotations.Text += annotation.Description + "\r\n";
+            //    }
+            //}
+        }
+
+        private async Task ProcesarImagenAsync()
+        {
+            picLoading.Visible = true;
+            btnProcesar.Enabled = false;
+
+            await Task.Run(() => {
+                var client = ImageAnnotatorClient.Create();
+                var image = Google.Cloud.Vision.V1.Image.FromFile(txtRutaImagen.Text);
+
+                labelAnnotations = client.DetectLabels(image);
+                textAnnotations = client.DetectText(image);
+                logoAnnotations = client.DetectLogos(image);
+            });
+
+            txtLabelAnnotations.Text = string.Empty;
+            txtTextAnnotations.Text = string.Empty;
+            txtLogoAnnotations.Text = string.Empty;
+
+            foreach (var annotation in labelAnnotations)
             {
                 if (annotation.Description != null)
                 {
-                    textBox1.Text += annotation.Description + "\r\n";
+                    txtLabelAnnotations.Text += annotation.Description + "\r\n";
                 }
             }
+
+            foreach (var annotation in textAnnotations)
+            {
+                if (annotation.Description != null)
+                {
+                    txtTextAnnotations.Text += annotation.Description + "\r\n";
+                }
+            }
+
+            foreach (var annotation in logoAnnotations)
+            {
+                if (annotation.Description != null)
+                {
+                    txtLogoAnnotations.Text += annotation.Description + "\r\n";
+                }
+            }
+
+            btnProcesar.Enabled = true;
+            picLoading.Visible = false;
         }
 
         private void btnSeleccionarImagen_Click(object sender, EventArgs e)
         {
-            // open file dialog   
             OpenFileDialog open = new OpenFileDialog();
-            // image filters  
             open.Filter = "Image Files(*.png; *.jpg; *.jpeg; *.gif; *.bmp)|*.png; *.jpg; *.jpeg; *.gif; *.bmp";
             if (open.ShowDialog() == DialogResult.OK)
             {
-                // display image in picture box  
                 picImagen.Image = new Bitmap(open.FileName);
-                // image file path  
                 txtRutaImagen.Text = open.FileName;
+                btnProcesar.Enabled = true;
             }
         }
+
     }
 }
