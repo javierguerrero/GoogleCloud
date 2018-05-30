@@ -36,12 +36,14 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.picImagen = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblWeb = new System.Windows.Forms.Label();
+            this.picLoading = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtLogoAnnotations = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtTextAnnotations = new System.Windows.Forms.TextBox();
-            this.picLoading = new System.Windows.Forms.PictureBox();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picImagen)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -81,7 +83,7 @@
             this.txtRutaImagen.Location = new System.Drawing.Point(6, 33);
             this.txtRutaImagen.Name = "txtRutaImagen";
             this.txtRutaImagen.Size = new System.Drawing.Size(216, 20);
-            this.txtRutaImagen.TabIndex = 3;
+            this.txtRutaImagen.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -106,6 +108,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.webBrowser1);
+            this.groupBox2.Controls.Add(this.lblWeb);
             this.groupBox2.Controls.Add(this.picLoading);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtLogoAnnotations);
@@ -116,10 +120,29 @@
             this.groupBox2.Controls.Add(this.txtLabelAnnotations);
             this.groupBox2.Location = new System.Drawing.Point(401, 25);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(539, 332);
+            this.groupBox2.Size = new System.Drawing.Size(763, 332);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Paso 2: Analizar imagen";
+            // 
+            // lblWeb
+            // 
+            this.lblWeb.AutoSize = true;
+            this.lblWeb.Location = new System.Drawing.Point(625, 295);
+            this.lblWeb.Name = "lblWeb";
+            this.lblWeb.Size = new System.Drawing.Size(30, 13);
+            this.lblWeb.TabIndex = 9;
+            this.lblWeb.Text = "Web";
+            // 
+            // picLoading
+            // 
+            this.picLoading.Image = ((System.Drawing.Image)(resources.GetObject("picLoading.Image")));
+            this.picLoading.Location = new System.Drawing.Point(124, 31);
+            this.picLoading.Name = "picLoading";
+            this.picLoading.Size = new System.Drawing.Size(37, 23);
+            this.picLoading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.picLoading.TabIndex = 7;
+            this.picLoading.TabStop = false;
             // 
             // label3
             // 
@@ -164,21 +187,19 @@
             this.txtTextAnnotations.Size = new System.Drawing.Size(162, 220);
             this.txtTextAnnotations.TabIndex = 2;
             // 
-            // picLoading
+            // webBrowser1
             // 
-            this.picLoading.Image = ((System.Drawing.Image)(resources.GetObject("picLoading.Image")));
-            this.picLoading.Location = new System.Drawing.Point(124, 31);
-            this.picLoading.Name = "picLoading";
-            this.picLoading.Size = new System.Drawing.Size(37, 23);
-            this.picLoading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.picLoading.TabIndex = 7;
-            this.picLoading.TabStop = false;
+            this.webBrowser1.Location = new System.Drawing.Point(524, 72);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(225, 220);
+            this.webBrowser1.TabIndex = 10;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(961, 377);
+            this.ClientSize = new System.Drawing.Size(1176, 377);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.MaximizeBox = false;
@@ -209,6 +230,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtLogoAnnotations;
         private System.Windows.Forms.PictureBox picLoading;
+        private System.Windows.Forms.Label lblWeb;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }
 

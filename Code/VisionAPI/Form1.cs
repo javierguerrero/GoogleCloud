@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,14 +18,21 @@ namespace VisionAPI
         IReadOnlyList<EntityAnnotation> labelAnnotations;
         IReadOnlyList<EntityAnnotation> textAnnotations;
         IReadOnlyList<EntityAnnotation> logoAnnotations;
-
+        WebDetection webAnnotations;
+        
         public Form1()
         {
             InitializeComponent();
-            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", ConfigurationManager.AppSettings["GOOGLE_APPLICATION_CREDENTIALS"]);
             btnProcesar.Enabled = false;
             txtRutaImagen.Enabled = false;
             picLoading.Visible = false;
+
+            //string appPath = Path.GetDirectoryName(Application.ExecutablePath);
+            //System.IO.DirectoryInfo directoryInfo = System.IO.Directory.GetParent(appPath);
+            //System.IO.DirectoryInfo directoryInfo2 = System.IO.Directory.GetParent(directoryInfo.FullName);
+            //string path = directoryInfo2.FullName + @"\data\KSINPI-cfc2106a59da.json";
+            string path = ConfigurationManager.AppSettings["GOOGLE_APPLICATION_CREDENTIALS"];
+            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
         }
 
         private void btnProcesar_Click(object sender, EventArgs e)
@@ -47,13 +55,15 @@ namespace VisionAPI
                 labelAnnotations = client.DetectLabels(image);
                 textAnnotations = client.DetectText(image);
                 logoAnnotations = client.DetectLogos(image);
+                webAnnotations = client.DetectWebInformation(image);
+
             });
 
             foreach (var annotation in labelAnnotations)
             {
                 if (annotation.Description != null)
                 {
-                    txtLabelAnnotations.Text += annotation.Description + "\r\n";
+                    txtLabelAnnotations.Text += annotation.Description + $" ({ Math.Round(annotation.Score, 2) * 100}%)" + "\r\n";
                 }
             }
 
@@ -69,12 +79,67 @@ namespace VisionAPI
             {
                 if (annotation.Description != null)
                 {
-                    txtLogoAnnotations.Text += annotation.Description + "\r\n";
+                    txtLogoAnnotations.Text += annotation.Description + $" ({ Math.Round(annotation.Score, 2) * 100}%)" + "\r\n";
                 }
             }
 
+            webBrowser1.DocumentText = GetHTML(webAnnotations);
+
             btnProcesar.Enabled = true;
             picLoading.Visible = false;
+        }
+
+        private string GetHTML(WebDetection webAnnotations)
+        {
+            string html = string.Empty;
+            html += "<html><body>";
+
+            if (webAnnotations.WebEntities.Count > 0)
+            {
+                html += "<strong>Web Entities</strong>";
+                html += "<ul>";
+                foreach (var item in webAnnotations.WebEntities)
+                {
+                    html += $"<li><a target='_blank' href='https://www.google.com/search?q={item.Description}+logos&tbm=isch'>{item.Description}</a></li>";
+                }
+                html += "</ul>";
+            }
+
+            if (webAnnotations.PagesWithMatchingImages.Count > 0)
+            {
+                html += "<strong>Pages with Matched Images</strong>";
+                html += "<ul>";
+                foreach (var item in webAnnotations.PagesWithMatchingImages)
+                {
+                    html += $"<li><a target='_blank' href='{item.Url}'>{item.Url}</a></li>";
+                }
+                html += "</ul>";
+            }
+
+            if (webAnnotations.FullMatchingImages.Count > 0)
+            {
+                html += "<strong>Fully Matched Images</strong>";
+                html += "<ul>";
+                foreach (var item in webAnnotations.FullMatchingImages)
+                {
+                    html += $"<li><a target='_blank' href='{item.Url}'>{item.Url}</a></li>";
+                }
+                html += "</ul>";
+            }
+
+            if (webAnnotations.PartialMatchingImages.Count > 0)
+            {
+                html += "<strong>Partially Matched Images</strong>";
+                html += "<ul>";
+                foreach (var item in webAnnotations.PartialMatchingImages)
+                {
+                    html += $"<li><a target='_blank' href='{item.Url}'>{item.Url}</a></li>";
+                }
+                html += "</ul>";
+            }
+            html += "</body></html>";
+
+            return html;
         }
 
         private void btnSeleccionarImagen_Click(object sender, EventArgs e)
@@ -88,6 +153,7 @@ namespace VisionAPI
                 btnProcesar.Enabled = true;
             }
         }
+
 
     }
 }
