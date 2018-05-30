@@ -30,46 +30,15 @@ namespace VisionAPI
         private void btnProcesar_Click(object sender, EventArgs e)
         {
             ProcesarImagenAsync();
-
-            //var client = ImageAnnotatorClient.Create();
-            //var image = Google.Cloud.Vision.V1.Image.FromFile(txtRutaImagen.Text);
-            //var labelAnnotations = client.DetectLabels(image);
-            //var textAnnotations = client.DetectText(image);
-            //var logoAnnotations = client.DetectLogos(image);
-
-            //txtLabelAnnotations.Text = string.Empty;
-            //txtTextAnnotations.Text = string.Empty;
-            //txtLogoAnnotations.Text = string.Empty;
-
-            //foreach (var annotation in labelAnnotations)
-            //{
-            //    if (annotation.Description != null)
-            //    {
-            //        txtLabelAnnotations.Text += annotation.Description + "\r\n";
-            //    }
-            //}
-
-            //foreach (var annotation in textAnnotations)
-            //{
-            //    if (annotation.Description != null)
-            //    {
-            //        txtTextAnnotations.Text += annotation.Description + "\r\n";
-            //    }
-            //}
-
-            //foreach (var annotation in logoAnnotations)
-            //{
-            //    if (annotation.Description != null)
-            //    {
-            //        txtLogoAnnotations.Text += annotation.Description + "\r\n";
-            //    }
-            //}
         }
 
         private async Task ProcesarImagenAsync()
         {
             picLoading.Visible = true;
             btnProcesar.Enabled = false;
+            txtLabelAnnotations.Text = string.Empty;
+            txtTextAnnotations.Text = string.Empty;
+            txtLogoAnnotations.Text = string.Empty;
 
             await Task.Run(() => {
                 var client = ImageAnnotatorClient.Create();
@@ -79,10 +48,6 @@ namespace VisionAPI
                 textAnnotations = client.DetectText(image);
                 logoAnnotations = client.DetectLogos(image);
             });
-
-            txtLabelAnnotations.Text = string.Empty;
-            txtTextAnnotations.Text = string.Empty;
-            txtLogoAnnotations.Text = string.Empty;
 
             foreach (var annotation in labelAnnotations)
             {
